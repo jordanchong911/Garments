@@ -69,18 +69,7 @@ class NeuralNetwork(nn.Module):
     def __init__(self,
                  input_size,
                  num_classes,
-                 list_hidden,
-                 activation='sigmoid'):
-        """Class constructor for NeuralNetwork
-
-        Arguments:
-            input_size {int} -- Number of features in the dataset
-            num_classes {int} -- Number of classes in the dataset
-            list_hidden {list} -- List of integers representing the number of
-            units per hidden layer in the network
-            activation {str, optional} -- Type of activation function. Choices
-            include 'sigmoid', 'tanh', and 'relu'.
-        """
+                 list_hidden):
         super(NeuralNetwork, self).__init__()
 
         self.input_size = input_size
@@ -88,27 +77,20 @@ class NeuralNetwork(nn.Module):
         self.list_hidden = list_hidden
 
     def create_network(self):
-        """Creates the layers of the neural network.
-        """
         layers = []
 
         layers.append(torch.nn.Linear(in_features=self.input_size, out_features=self.list_hidden[0]))
-        layers.append(self.get_activation())
+        layers.append(nn.ReLU())
 
         for i in range(len(self.list_hidden) - 1):
             layers.append(torch.nn.Linear(in_features=self.list_hidden[i], out_features=self.list_hidden[i+1]))
-            layers.append(self.get_activation())
+            layers.append(nn.ReLU())
 
         layers.append(torch.nn.Linear(in_features=self.list_hidden[-1], out_features=1)) # made output neuron always one
         
         self.layers = nn.Sequential(*layers) # removed softmax layer
 
     def init_weights(self):
-        """Initializes the weights of the network. Weights of a
-        torch.nn.Linear layer should be initialized from a normal
-        distribution with mean 0 and standard deviation 0.1. Bias terms of a
-        torch.nn.Linear layer should be initialized with a constant value of 0.
-        """
         torch.manual_seed(2)
 
         for module in self.modules():
@@ -119,30 +101,9 @@ class NeuralNetwork(nn.Module):
 
                 nn.init.constant_(module.bias, 0)
 
-    def get_activation(self,
-                       mode='sigmoid'):
-        activation = nn.ReLU()
-
-        return activation
-
     def forward(self,
                 x,
                 verbose=False):
-
-        # for i in range(len(self.layers) - 1):
-        #     x = self.layers[i](x)
-
-        #     if verbose:
-        #         print('Output of layer ' + str(i))
-        #         print(x, '\n')
-
-        # probability = self.layers[-1](x)
-
-        # if verbose:
-        #     print('Output of layer ' + str(len(self.layers) - 1))
-        #     print(probability, '\n')
-
-        # return x, probability
 
         for i, layer in enumerate(self.layers):
             x = layer(x)
@@ -151,8 +112,3 @@ class NeuralNetwork(nn.Module):
             print(f'Output of layer {i}:', x, '\n')
 
         return x  # final output for regression
-
-    def predict(self,
-                probability):
-
-        return probability # made it return the model's output directly
