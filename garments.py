@@ -3,18 +3,7 @@ import torch.nn as nn
 import torch.nn.init
 
 class DataLoader(object):
-
     def __init__(self, X, y, batch_size):
-        """Class constructor for DataLoader
-
-        Arguments:
-            X {np.ndarray} -- A numpy array of shape (N, D) containing the
-            data; there are N samples each of dimension D.
-            y {np.ndarray} -- A numpy array of shape (N, 1) containing the
-            ground truth values.
-            batch_size {int} -- An integer representing the number of instances
-            per batch.
-        """
         self.X = X
         self.y = y
         self.batch_size = batch_size
@@ -23,25 +12,11 @@ class DataLoader(object):
         np.random.seed(1)
 
     def shuffle(self):
-        """Shuffles the indices in self.indices.
-        """
-
         np.random.shuffle(self.indices)
 
     def get_batch(self, mode='train'):
         """Returns self.X and self.y divided into different batches of size
-        self.batch_size according to the shuffled self.indices.
-
-        Arguments:
-            mode {str} -- A string which determines the mode of the model. This
-            can either be `train` or `test`.
-
-        Returns:
-            list, list -- List of np.ndarray containing the data divided into
-            different batches of size self.batch_size; List of np.ndarray
-            containing the ground truth labels divided into different batches
-            of size self.batch_size
-        """
+        self.batch_size according to the shuffled self.indices."""
 
         X_batch = []
         y_batch = []
